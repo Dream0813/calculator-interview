@@ -201,23 +201,33 @@ function inputSqrt() {
   show();
 }
 
-/** 百分号键：有左操作数时按 a 的百分之 b 计算，否则直接除以 100。 */
+/** 百分号键：加减时按左操作数的百分之几计算，乘除时直接转成小数。 */
 function inputPercent() {
   if (isError()) {
     return;
   }
 
-  const current = Number(text);
+  const value = Number(text);
+  const isPercentOfLeft = pendingOp === '+' || pendingOp === '−';
+  let result;
 
-  if (acc !== null && pendingOp !== null) {
-    text = formatResult(acc * current / 100);
+  if (acc !== null && isPercentOfLeft) {
+    result = acc * value / 100;
   } else {
-    text = formatResult(current / 100);
+    result = value / 100;
+  }
+
+  text = formatResult(result);
+
+  if (text === ERROR_TEXT) {
+    clearState();
+    showSub('');
   }
 
   waiting = false;
   show();
 }
+
 
 /** 平方键：对当前显示的数求平方。 */
 function inputSquare() {
